@@ -36,6 +36,7 @@ commit-guard-zh/
 | secret-scan | bash+grep | pre-commit / skill | 开 |
 | gorm-mysql-check | bash+grep(仅 `*.go`) | pre-commit / skill | **关**(config 开) |
 | push-guard | bash | pre-push / skill | 开 |
+| markdownlint(扫 staged .md;后续增补) | bash(调 markdownlint-cli) | pre-commit / skill | **关**(config 开,未装自动跳过) |
 | commit-zh(中文 commit) | Claude | 仅 skill | 开 |
 
 - **secret-scan**:扫 `git diff --cached`。命中 API key / 私钥块(`BEGIN ... PRIVATE KEY`)/ `.p8` / 看似 firebase service-account JSON / 高熵 `password=`/`token=` 赋值 → `exit 2` 拦截。支持 config 白名单(正则/路径)。宁可误报也要拦。

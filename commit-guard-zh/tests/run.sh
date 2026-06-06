@@ -54,6 +54,18 @@ type Doc struct {
 GO
 assert 2 "json+default 拦截" -- bash "$BIN/gorm-mysql-check.sh" "$TMP/bad2.go"
 
+echo "== markdownlint-check =="
+# 无 md 文件入参时(传一个不存在后缀)——这里用 stub 控制结果,文件名仅占位
+echo "# 标题" > "$TMP/doc.md"
+# stub:干净(exit 0)
+printf '#!/bin/sh\nexit 0\n' > "$TMP/md-clean"; chmod +x "$TMP/md-clean"
+assert 0 "md 干净放行" -- env MD_LINT_CMD="$TMP/md-clean" bash "$BIN/markdownlint-check.sh" "$TMP/doc.md"
+# stub:有问题(exit 1)
+printf '#!/bin/sh\necho "doc.md:1 MD041"; exit 1\n' > "$TMP/md-bad"; chmod +x "$TMP/md-bad"
+assert 2 "md 有问题拦截" -- env MD_LINT_CMD="$TMP/md-bad" bash "$BIN/markdownlint-check.sh" "$TMP/doc.md"
+# 未指定文件且无 staged md(空入参在临时目录跑)——应放行
+assert 0 "无 md 文件放行" -- env MD_LINT_CMD="$TMP/md-bad" bash -c "cd '$TMP' && bash '$BIN/markdownlint-check.sh'"
+
 echo "== push-guard =="
 assert 2 "推保护分支未确认 拦截" -- bash "$BIN/push-guard.sh" main
 assert 0 "推保护分支已确认 放行" -- env COMMIT_GUARD_CONFIRM=1 bash "$BIN/push-guard.sh" main

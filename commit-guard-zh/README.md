@@ -12,9 +12,10 @@
 | **secret-scan** | 扫 staged diff 的密钥/凭据(私钥块、AWS/GitHub/Slack token、firebase JSON、`.p8`/`.pem`、长密码赋值) | 脚本(hook + skill) |
 | **gorm-mysql-check** | 扫 staged `.go` 的 GORM×MySQL 非法写法(TEXT/BLOB/JSON 列带 `default:` → MySQL Error 1101) | 脚本(默认关) |
 | **push-guard** | 推受保护分支需确认 + 防把 `.env`/密钥文件推上去 | 脚本(hook + skill) |
+| **markdownlint** | 对 staged `.md` 跑 markdownlint(需 markdownlint-cli,默认关) | 脚本(默认关) |
 | **commit-zh** | 从 `git diff` 生成中文 conventional commit | Claude(skill) |
 
-> 全部通用、零外部依赖(纯 bash + grep + git)、不联网、不扫历史。
+> 核心检查零外部依赖(纯 bash + grep + git);markdownlint 是唯一可选的外部依赖,未装则自动跳过、绝不阻断。全部不联网、不扫历史。
 
 ## 🚀 用法
 
@@ -53,6 +54,7 @@ COMMIT_GUARD_CONFIRM=1 git push
 ```sh
 BRANCH_PROTECT="main master"   # 受保护分支
 ENABLE_GORM_CHECK=0            # Go+GORM 项目设 1 才开
+ENABLE_MD_LINT=0              # 设 1 启用 markdownlint(需 markdownlint-cli;未装自动跳过)
 SECRET_WHITELIST=""           # secret 误报白名单(extended regex),如 'testdata/|docs/'
 ```
 

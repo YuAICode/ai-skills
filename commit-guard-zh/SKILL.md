@@ -19,6 +19,8 @@ description: 提交/推送前的本地护栏 + 中文 commit 助手。当用户�
 bash <skill>/bin/secret-scan.sh            # 扫 staged diff 的密钥/凭据
 # 若该 repo 是 Go+GORM(.commit-guard.sh 里 ENABLE_GORM_CHECK=1):
 bash <skill>/bin/gorm-mysql-check.sh       # 扫 staged .go 的 TEXT/JSON 带 DEFAULT
+# 若启用了 md lint(ENABLE_MD_LINT=1,需装 markdownlint-cli):
+bash <skill>/bin/markdownlint-check.sh     # 扫 staged .md(未装 linter 则自动跳过)
 ```
 
 - 任一脚本 `exit 2` → **停下**。把 stderr 里的问题用中文讲清楚 + 给修法,等用户处理,**不要**擅自跳过或 `--no-verify`。
@@ -55,6 +57,7 @@ bash <skill>/install.sh /path/to/your-repo
 目标 repo 根目录放 `.commit-guard.sh`(从 `config.example.sh` 复制):
 - `BRANCH_PROTECT="main master"` — 受保护分支
 - `ENABLE_GORM_CHECK=0` — 是否启用 GORM 检查(仅 Go+GORM 项目;默认关)
+- `ENABLE_MD_LINT=0` — 是否启用 markdownlint 检查 .md(需 markdownlint-cli;默认关,未装自动跳过)
 - `SECRET_WHITELIST=""` — secret 误报白名单(extended regex)
 
 ## 边界

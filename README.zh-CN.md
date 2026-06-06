@@ -42,6 +42,10 @@
 | [mermaid-buddy](./skills/mermaid-buddy) | 代码/描述 → mermaid 图(流程/时序/类/ER/状态/甘特),贴文档即用 | `画个流程图` / `转成 mermaid` |
 | [commit-roast](./skills/commit-roast) | 读 git 提交历史用中文幽默吐槽,善意有梗、可分享 | `吐槽我的提交` / `损一损 git log` |
 | [port-killer](./skills/port-killer) | 找出占端口的进程 + 给 kill 命令(默认只查不杀) | `8080 被占了` / `谁在用这个端口` |
+| [naming-buddy](./skills/naming-buddy) | 命名困难症救星:逻辑+语言 → 3-5 个候选名 + 中英理由 + 坏味道诊断 | `帮我起个名字` / `给这函数命名` |
+| [tldr-this](./skills/tldr-this) | 把超长文件/PR/文档/文本压成中文 TL;DR + 关键点 | `太长了帮我总结` / `tldr` |
+| [dockerfile-doctor](./skills/dockerfile-doctor) | 扫 Dockerfile 体积/安全/缓存/最佳实践问题,给中文修法 | `检查我的 Dockerfile` |
+| [mock-data-gen](./skills/mock-data-gen) | 按表结构/struct/JSON 生成假数据/种子数据(JSON/SQL/CSV/NDJSON) | `帮我造测试数据` / `生成假数据` |
 
 ## 🚀 安装
 

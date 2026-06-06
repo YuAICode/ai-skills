@@ -16,6 +16,7 @@
 | [commit-guard-zh](./commit-guard-zh) | 提交/推送前护栏(密钥扫描 / GORM×MySQL / 主分支保护)+ 中文 commit | `准备提交` / `bash install.sh` 装 git hook |
 | [skill-scaffold](./skill-scaffold) | 一键生成新 skill 标准骨架(SKILL.md + 徽章 README + 可选 bin/tests) | `建个新 skill` / `bash bin/new-skill.sh` |
 | [pr-desc-zh](./pr-desc-zh) | 从 git diff/commits 生成中文 PR 描述(动机/改动点/测试/影响面) | `写个 PR` / `生成 PR 描述` |
+| [source-to-spec](./source-to-spec) | PDF/飞书/会议纪要 → 可落地需求 spec(slack-to-spec 姊妹篇) | `把这份文档整理成需求` |
 
 ## 🚀 安装
 

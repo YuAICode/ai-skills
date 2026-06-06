@@ -1,5 +1,8 @@
 # slack-to-spec 📋
 
+[![Repo](https://img.shields.io/badge/GitHub-YuAICode%2Fai--skills-181717?logo=github)](https://github.com/YuAICode/ai-skills/tree/main/slack-to-spec)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
+
 把某个 Slack 频道一段时间内的讨论,收敛成一份**可落地的需求 spec 文档**。
 
 核心价值不是"总结",而是:**抓住决策(尤其被推翻/取代的方案)+ 拎出隐藏的开发需求 + 划清开工红线**——让开发能照着干,三个月后还能回溯"为啥这么定"。

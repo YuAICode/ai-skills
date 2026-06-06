@@ -1,5 +1,8 @@
 # claude-code-zh 🌸
 
+[![Repo](https://img.shields.io/badge/GitHub-YuAICode%2Fai--skills-181717?logo=github)](https://github.com/YuAICode/ai-skills/tree/main/claude-code-zh)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
+
 把 **Claude Code 汉化**——让 Claude 默认用中文回复,并给每个工具调用加中文 tooltip 提示。
 
 > 适用于 Claude Code v2.1.113+(编译二进制版)。这些新版本里,所有"字符串替换界面汉化"工具都已失效;本仓库只保留**可靠、可逆、零风险**的两件事。

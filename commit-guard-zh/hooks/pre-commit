@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# commit-guard-zh pre-commit hook —— 由 install.sh 装到 .git/hooks/pre-commit
+# 调用 .git/hooks/commit-guard/ 下的检查脚本(secret-scan 始终跑;gorm 按 config 开关)
+set -uo pipefail
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+CG="$HOOK_DIR/commit-guard"
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || echo .)"
+ENABLE_GORM_CHECK="${ENABLE_GORM_CHECK:-0}"
+[ -f "$REPO_ROOT/.commit-guard.sh" ] && . "$REPO_ROOT/.commit-guard.sh" 2>/dev/null || true
+
+bash "$CG/secret-scan.sh" || exit $?
+if [ "${ENABLE_GORM_CHECK:-0}" = "1" ]; then
+  bash "$CG/gorm-mysql-check.sh" || exit $?
+fi
+exit 0

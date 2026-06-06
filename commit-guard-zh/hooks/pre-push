@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# commit-guard-zh pre-push hook —— 由 install.sh 装到 .git/hooks/pre-push
+# git 通过 stdin 传 "<local ref> <local sha> <remote ref> <remote sha>" 多行
+set -uo pipefail
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+CG="$HOOK_DIR/commit-guard"
+
+# 从 stdin 收集本次要推的本地分支名(refs/heads/X → X)
+branches=""
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$local_ref" in
+    refs/heads/*) branches="$branches ${local_ref#refs/heads/}";;
+  esac
+done
+# stdin 为空(某些场景)则退回当前分支
+[ -z "${branches// /}" ] && branches="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo '')"
+
+rc=0
+for b in $branches; do
+  bash "$CG/push-guard.sh" "$b" || rc=$?
+done
+exit $rc

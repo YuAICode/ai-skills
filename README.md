@@ -32,6 +32,10 @@
 | [standup-zh](./standup-zh) | 从 git 提交生成中文日报/周报 | `写日报` / `写周报` / `今天做了什么` |
 | [readme-init](./readme-init) | 扫项目(栈/结构/脚本)自动生成或刷新 README | `帮我生成 README` / `刷新 README` |
 | [gitignore-doctor](./gitignore-doctor) | 揪出被追踪/未忽略的垃圾文件,给 .gitignore 建议 | `检查 gitignore` / `帮我清理 gitignore` |
+| [license-picker](./license-picker) | 选 + 生成开源 LICENSE(MIT/ISC/BSD/Unlicense 填充,Apache/GPL 指引) | `选个开源协议` / `加个 LICENSE` |
+| [conflict-resolver-zh](./conflict-resolver-zh) | 把 merge/rebase 冲突用中文讲清两边意图,引导解决(不自动改) | `帮我看冲突` / `解冲突` |
+| [json-yaml-doctor](./json-yaml-doctor) | 校验/格式化/解释 JSON·YAML·TOML,报错给中文定位 | `校验 json` / `yaml 报错` |
+| [curl-buddy](./curl-buddy) | 构造/解释 curl 与 HTTP 请求,逐项拆解 + 安全提示 | `解释这条 curl` / `帮我构造请求` |
 
 ## 🚀 安装
 

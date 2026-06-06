@@ -14,6 +14,7 @@
 | [claude-code-zh](./claude-code-zh) | 把 Claude Code 汉化:中文回复 + 命令中文 tooltip(可一键开关) | `汉化 Claude Code` / 见目录 |
 | [slack-to-spec](./slack-to-spec) | 把 Slack 频道讨论收敛成「可落地需求」spec 文档(抓决策轨迹 + 隐藏需求) | `/slack-to-spec <频道> [时间范围]` |
 | [commit-guard-zh](./commit-guard-zh) | 提交/推送前护栏(密钥扫描 / GORM×MySQL / 主分支保护)+ 中文 commit | `准备提交` / `bash install.sh` 装 git hook |
+| [skill-scaffold](./skill-scaffold) | 一键生成新 skill 标准骨架(SKILL.md + 徽章 README + 可选 bin/tests) | `建个新 skill` / `bash bin/new-skill.sh` |
 
 ## 🚀 安装
 

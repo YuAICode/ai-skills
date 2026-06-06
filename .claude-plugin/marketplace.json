@@ -1,0 +1,17 @@
+{
+  "name": "ai-skills",
+  "metadata": {
+    "description": "Curated, tested Claude Code skills — each ships offline tests and is self-linted by skill-doctor. Chinese-first, mostly stack-agnostic."
+  },
+  "owner": {
+    "name": "YuAICode",
+    "url": "https://github.com/YuAICode"
+  },
+  "plugins": [
+    {
+      "name": "ai-skills",
+      "source": "./",
+      "description": "25 tested, self-linted Claude Code skills. Chinese-first, mostly stack-agnostic."
+    }
+  ]
+}

@@ -19,6 +19,15 @@
 | [source-to-spec](./source-to-spec) | PDF/飞书/会议纪要 → 可落地需求 spec(slack-to-spec 姊妹篇) | `把这份文档整理成需求` |
 | [lambda-logs-zh](./lambda-logs-zh) | 拉 Lambda CloudWatch 报错,按频次聚类 + 中文根因摘要 | `看下 xx 的 lambda 报错` |
 | [changelog-zh](./changelog-zh) | conventional commits → 中文 CHANGELOG / release notes | `生成 changelog` / `出个更新日志` |
+| [doc-sync](./doc-sync) | 找出代码改动后可能过期的文档候选,由 Claude 判断是否需同步 | `检查文档同步` / `代码改了文档要更新吗` |
+| [branch-cleaner](./branch-cleaner) | 列出可清理的本地分支(已合并/陈旧),确认后再删 | `清理分支` / `哪些分支可以删` |
+| [go-migration-guard](./go-migration-guard) | 启发式查 GORM 模型改动是否可能缺对应迁移 | `检查迁移` / `gorm 模型改了` |
+| [sql-explain-zh](./sql-explain-zh) | 解读慢查询 EXPLAIN + 中文优化建议(索引/回表/filesort) | `EXPLAIN 帮我看下` / `SQL 优化` |
+| [env-doctor](./env-doctor) | 跑前环境体检:缺失的 .env、对比模板列出未配置/空值 key | `体检环境` / `.env 缺了什么` |
+| [test-gen-zh](./test-gen-zh) | 给指定函数/文件生成测试(探测框架),配合 TDD | `帮我生成测试` / `给这个函数写测试` |
+| [dep-audit](./dep-audit) | 扫依赖清单报过期/风险依赖,中文升级摘要 | `检查依赖` / `依赖过期了吗` |
+| [cron-regex-buddy](./cron-regex-buddy) | 中文解释/生成 cron 表达式与正则,逐字段讲清+示例 | `解释这个 cron` / `帮我写个正则` |
+| [skill-doctor](./skill-doctor) | 发布前 lint skill 目录是否符合合集约定 | `检查 skill` / `lint skill` |
 
 ## 🚀 安装
 

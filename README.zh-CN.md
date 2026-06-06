@@ -38,6 +38,10 @@
 | [conflict-resolver-zh](./skills/conflict-resolver-zh) | 把 merge/rebase 冲突用中文讲清两边意图,引导解决(不自动改) | `帮我看冲突` / `解冲突` |
 | [json-yaml-doctor](./skills/json-yaml-doctor) | 校验/格式化/解释 JSON·YAML·TOML,报错给中文定位 | `校验 json` / `yaml 报错` |
 | [curl-buddy](./skills/curl-buddy) | 构造/解释 curl 与 HTTP 请求,逐项拆解 + 安全提示 | `解释这条 curl` / `帮我构造请求` |
+| [git-undo](./skills/git-undo) | 中文说想撤销啥 git 操作 → 安全恢复命令 + 解释(reflog 优先) | `帮我撤销` / `git 救命` |
+| [mermaid-buddy](./skills/mermaid-buddy) | 代码/描述 → mermaid 图(流程/时序/类/ER/状态/甘特),贴文档即用 | `画个流程图` / `转成 mermaid` |
+| [commit-roast](./skills/commit-roast) | 读 git 提交历史用中文幽默吐槽,善意有梗、可分享 | `吐槽我的提交` / `损一损 git log` |
+| [port-killer](./skills/port-killer) | 找出占端口的进程 + 给 kill 命令(默认只查不杀) | `8080 被占了` / `谁在用这个端口` |
 
 ## 🚀 安装
 

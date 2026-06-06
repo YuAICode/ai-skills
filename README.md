@@ -60,6 +60,15 @@ Each skill is a self-contained folder with a `SKILL.md` — drop it into `~/.cla
 | [sql-explain-zh](./skills/sql-explain-zh) | Read a slow-query `EXPLAIN`, give Chinese tuning advice (index/rows/filesort) | "explain this SQL" |
 | [claude-code-zh](./skills/claude-code-zh) | Localize Claude Code: Chinese replies + per-tool Chinese tooltips (toggleable) | "localize Claude Code" |
 
+### Handy / fun
+
+| Skill | What it does | Trigger |
+| --- | --- | --- |
+| [git-undo](./skills/git-undo) | Describe the git mistake → safe recovery command + explanation (reflog-first) | "undo my git" / "I messed up git" |
+| [mermaid-buddy](./skills/mermaid-buddy) | Code or description → Mermaid diagram (flow/sequence/class/ER/state/gantt) | "draw a flowchart" / "to mermaid" |
+| [commit-roast](./skills/commit-roast) | Read your git log and roast it in Chinese — good-natured, shareable | "roast my commits" |
+| [port-killer](./skills/port-killer) | Find what's holding a port, list PID/cmd + kill command (查 by default) | "what's on port 8080" |
+
 ## 🚀 Install
 
 ### Option A — as a Claude Code plugin (recommended)

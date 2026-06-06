@@ -28,6 +28,10 @@
 | [dep-audit](./dep-audit) | 扫依赖清单报过期/风险依赖,中文升级摘要 | `检查依赖` / `依赖过期了吗` |
 | [cron-regex-buddy](./cron-regex-buddy) | 中文解释/生成 cron 表达式与正则,逐字段讲清+示例 | `解释这个 cron` / `帮我写个正则` |
 | [skill-doctor](./skill-doctor) | 发布前 lint skill 目录是否符合合集约定 | `检查 skill` / `lint skill` |
+| [error-explain-zh](./error-explain-zh) | 粘任意语言报错/堆栈 → 中文根因 + 可操作修复建议 | `帮我看这个报错` / `这个 panic 怎么回事` |
+| [standup-zh](./standup-zh) | 从 git 提交生成中文日报/周报 | `写日报` / `写周报` / `今天做了什么` |
+| [readme-init](./readme-init) | 扫项目(栈/结构/脚本)自动生成或刷新 README | `帮我生成 README` / `刷新 README` |
+| [gitignore-doctor](./gitignore-doctor) | 揪出被追踪/未忽略的垃圾文件,给 .gitignore 建议 | `检查 gitignore` / `帮我清理 gitignore` |
 
 ## 🚀 安装
 

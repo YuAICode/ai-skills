@@ -14,7 +14,7 @@ description: 把某个 Slack 频道一段时间内的讨论收敛成一份"可�
 /slack-to-spec <频道> [时间范围]
 ```
 
-- `<频道>`:频道 ID(如 `C0XXXXXXX`)或频道名(如 `#产品_增长`)。给名字就先用 `slack_search_channels` 解析成 ID。
+- `<频道>`:频道 ID(如 `C0XXXXXXX`)或频道名(如 `#example-channel`)。给名字就先用 `slack_search_channels` 解析成 ID。
 - `[时间范围]`(可选,缺省 `7d`):
   - 相对:`24h` / `3d` / `7d` / `2w`(从现在往前)
   - 绝对区间:`2026-06-01..2026-06-05`
@@ -22,7 +22,7 @@ description: 把某个 Slack 频道一段时间内的讨论收敛成一份"可�
 
 示例:
 - `/slack-to-spec C0XXXXXXX 3d`
-- `/slack-to-spec #产品_增长_商业化 2026-06-01..2026-06-05`
+- `/slack-to-spec #example-channel 2026-06-01..2026-06-05`
 
 ## 依赖工具
 

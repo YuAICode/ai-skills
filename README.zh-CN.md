@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.jpg" alt="ai-skills" width="320">
+  <img src="./assets/banner.jpg" alt="ai-skills" width="100%">
 </p>
 
 # ai-skills 🧠

@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install deps used by some skill tests
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lsof
+
+      - name: README sync (中英 README 与 skills/ 一致)
+        run: bash scripts/check-readme-sync.sh
+
+      - name: skill-doctor lint (all skills)
+        run: |
+          fail=0
+          for d in skills/*/; do
+            name="$(basename "$d")"
+            if bash skills/skill-doctor/bin/lint-skill.sh "$d" >/dev/null 2>&1; then
+              echo "  ✓ $name"
+            else
+              echo "::error::skill-doctor failed: $name"
+              bash skills/skill-doctor/bin/lint-skill.sh "$d" || true
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Run all skill tests
+        run: |
+          fail=0
+          for d in skills/*/; do
+            name="$(basename "$d")"
+            if [ -f "$d/tests/run.sh" ]; then
+              echo "::group::tests: $name"
+              if bash "$d/tests/run.sh"; then
+                echo "  ✓ $name"
+              else
+                echo "::error::tests failed: $name"
+                fail=1
+              fi
+              echo "::endgroup::"
+            fi
+          done
+          exit $fail

@@ -7,7 +7,7 @@
 [![Stars](https://img.shields.io/github/stars/YuAICode/ai-skills?style=social)](https://github.com/YuAICode/ai-skills/stargazers)
 [![markdownlint](https://img.shields.io/badge/lint-markdownlint-brightgreen?logo=markdown)](./skills/commit-guard-zh)
 
-**25 practical, battle-tested skills for [Claude Code](https://www.claude.com/product/claude-code).** Every skill ships with its own offline tests, and the whole collection is self-linted by [`skill-doctor`](./skills/skill-doctor) — not an untested AI-generated dump. Chinese-first, but most skills are language- and stack-agnostic.
+**35 practical, battle-tested skills for [Claude Code](https://www.claude.com/product/claude-code).** Every skill ships with its own offline tests, and the whole collection is self-linted by [`skill-doctor`](./skills/skill-doctor) — not an untested AI-generated dump. Chinese-first, but most skills are language- and stack-agnostic.
 
 Each skill is a self-contained folder with a `SKILL.md` — drop it into `~/.claude/skills/` and Claude picks it up.
 

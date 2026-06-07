@@ -1,6 +1,6 @@
 {
   "name": "ai-skills",
-  "description": "25 practical, tested Claude Code skills (commit/PR/changelog hygiene, error explain, standup, README/license/gitignore helpers, JSON·YAML·TOML, curl, and more). Self-linted by skill-doctor. Chinese-first.",
+  "description": "35 practical, tested Claude Code skills (commit/PR/changelog hygiene, error explain, standup, README/license/gitignore helpers, JSON·YAML·TOML, curl, and more). Self-linted by skill-doctor. Chinese-first.",
   "version": "1.0.0",
   "author": { "name": "YuAICode" },
   "homepage": "https://github.com/YuAICode/ai-skills",

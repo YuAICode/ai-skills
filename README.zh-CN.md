@@ -7,7 +7,16 @@
 [![Stars](https://img.shields.io/github/stars/YuAICode/ai-skills?style=social)](https://github.com/YuAICode/ai-skills/stargazers)
 [![markdownlint](https://img.shields.io/badge/lint-markdownlint-brightgreen?logo=markdown)](./skills/commit-guard-zh)
 
-归拢自用的 AI skill 与 AI 项目。每个 skill 一个子目录,含 `SKILL.md`,可直接放进 `~/.claude/skills/` 使用。
+**35 个即用、且每个都带测试的 [Claude Code](https://www.claude.com/product/claude-code) skill。** 有逻辑的 skill 都配离线测试,整个仓库由内置的 [`skill-doctor`](./skills/skill-doctor) 自校验——不是没测试的 AI 批量堆砌。中文优先,大部分跨语言跨栈通用。
+
+每个 skill 是一个含 `SKILL.md` 的独立文件夹,丢进 `~/.claude/skills/` 即可被 Claude 识别。
+
+## ✨ 为什么用这个
+
+- **有测试。** 确定性逻辑写成小 bash 脚本 + `tests/run.sh`(离线、零依赖),全仓几百条断言。
+- **自校验。** `skill-doctor` 校验每个 skill 的结构,可进 CI。
+- **诚实。** 需要外部工具(aws/mysql/markdownlint…)的 skill,工具缺失时优雅降级,绝不搞崩你的工具链。
+- **易扩展。** `skill-scaffold` 一条命令生成新 skill 骨架(SKILL.md + README + 徽章 + 测试)。
 
 ## 📦 Skills
 

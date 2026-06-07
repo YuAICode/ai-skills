@@ -68,6 +68,8 @@ Each skill is a self-contained folder with a `SKILL.md` — drop it into `~/.cla
 | [mermaid-buddy](./skills/mermaid-buddy) | Code or description → Mermaid diagram (flow/sequence/class/ER/state/gantt) | "draw a flowchart" / "to mermaid" |
 | [commit-roast](./skills/commit-roast) | Read your git log and roast it in Chinese — good-natured, shareable | "roast my commits" |
 | [port-killer](./skills/port-killer) | Find what's holding a port, list PID/cmd + kill command (查 by default) | "what's on port 8080" |
+| [code-haiku](./skills/code-haiku) | Turn a function / diff into a haiku or doggerel that captures its essence | "haiku this function" |
+| [git-blame-story](./skills/git-blame-story) | Narrate a file's commit history as a Chinese story (who/when/why) | "tell this file's story" |
 | [naming-buddy](./skills/naming-buddy) | Naming help: logic + language → 3-5 ranked name candidates with rationale | "name this function" |
 | [tldr-this](./skills/tldr-this) | Compress a long file / PR / doc / text into a Chinese TL;DR + key points | "tldr this" / "summarize" |
 | [dockerfile-doctor](./skills/dockerfile-doctor) | Lint a Dockerfile for size/security/cache/best-practice issues, Chinese fixes | "check my Dockerfile" |

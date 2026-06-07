@@ -46,6 +46,8 @@
 | [tldr-this](./skills/tldr-this) | 把超长文件/PR/文档/文本压成中文 TL;DR + 关键点 | `太长了帮我总结` / `tldr` |
 | [dockerfile-doctor](./skills/dockerfile-doctor) | 扫 Dockerfile 体积/安全/缓存/最佳实践问题,给中文修法 | `检查我的 Dockerfile` |
 | [mock-data-gen](./skills/mock-data-gen) | 按表结构/struct/JSON 生成假数据/种子数据(JSON/SQL/CSV/NDJSON) | `帮我造测试数据` / `生成假数据` |
+| [code-haiku](./skills/code-haiku) | 把函数/代码片段/diff 写成俳句或打油诗,抓住代码神韵 | `给这段代码写首诗` / `写成俳句` |
+| [git-blame-story](./skills/git-blame-story) | 把一个文件的修改史讲成有起承转合的中文故事 | `讲讲这个文件的故事` |
 
 ## 🚀 安装
 

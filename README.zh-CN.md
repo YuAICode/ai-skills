@@ -1,8 +1,13 @@
+<p align="center">
+  <img src="./assets/logo.jpg" alt="ai-skills" width="320">
+</p>
+
 # ai-skills 🧠
 
 **简体中文** · [English](./README.md)
 
 [![Repo](https://img.shields.io/badge/GitHub-YuAICode%2Fai--skills-181717?logo=github)](https://github.com/YuAICode/ai-skills)
+[![CI](https://github.com/YuAICode/ai-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/YuAICode/ai-skills/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Stars](https://img.shields.io/github/stars/YuAICode/ai-skills?style=social)](https://github.com/YuAICode/ai-skills/stargazers)
 [![markdownlint](https://img.shields.io/badge/lint-markdownlint-brightgreen?logo=markdown)](./skills/commit-guard-zh)

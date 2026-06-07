@@ -30,6 +30,9 @@ cd "$TMP"
 git init -q
 git config user.email t@t.co
 git config user.name t
+# 强制初始分支为 main —— 不能依赖 `git init` 默认分支名:
+# macOS 常配 init.defaultBranch=main,但 Linux/CI 默认是 master,会让后续 checkout main 失败。
+git checkout -q -b main 2>/dev/null || git branch -q -m main
 
 c() { git -c commit.gpgsign=false commit -q --allow-empty -m "$1"; }
 

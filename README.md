@@ -113,11 +113,13 @@ Adding a skill is one command:
 ```bash
 cd skills
 bash skill-scaffold/bin/new-skill.sh my-skill "what it does (with trigger words)" --bin
-# fill in SKILL.md + bin + tests, then:
+# fill in SKILL.md + bin + tests, then lint it:
 bash skill-doctor/bin/lint-skill.sh my-skill
+# add a row to BOTH README.md and README.zh-CN.md, then verify they're in sync:
+cd .. && bash scripts/check-readme-sync.sh
 ```
 
-PRs welcome — every new skill should pass `skill-doctor` and include `tests/run.sh` if it has scripts.
+PRs welcome — every new skill should pass `skill-doctor`, include `tests/run.sh` if it has scripts, and be listed in **both** READMEs (`scripts/check-readme-sync.sh` enforces this).
 
 ## 📄 License
 

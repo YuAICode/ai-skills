@@ -28,6 +28,23 @@ ok "off 能关"       "CLAUDE_DIR='$TMP' bash '$TOGGLE' off >/dev/null 2>&1; CLA
 ok "off 后 settings 仍合法 JSON" "python3 -c \"import json;json.load(open('$TMP/settings.json'))\""
 ok "on 能开回来"    "CLAUDE_DIR='$TMP' bash '$TOGGLE' on >/dev/null 2>&1; CLAUDE_DIR='$TMP' bash '$TOGGLE' status 2>&1 | grep -q '开启'"
 
+echo "== statusline.sh 输出 =="
+SL="$DIR/../bin/statusline.sh"
+out_sl="$(printf '%s' '{"model":{"display_name":"Opus 4.8"},"workspace":{"current_dir":"/tmp/foo/ai-skills"}}' | bash "$SL")"
+ok "statusline 出模型名"      "printf '%s' \"\$out_sl\" | grep -q 'Opus 4.8'"
+ok "statusline 出目录 basename" "printf '%s' \"\$out_sl\" | grep -q 'ai-skills'"
+ok "statusline 含装饰 🌸"      "printf '%s' \"\$out_sl\" | grep -q '🌸'"
+out_sl2="$(printf '%s' '{"workspace":{"current_dir":"/tmp/bar"}}' | bash "$SL")"
+ok "缺 model 仍出目录"         "printf '%s' \"\$out_sl2\" | grep -q 'bar'"
+out_sl3="$(printf '%s' '{}' | bash "$SL"; echo "rc=$?")"
+ok "空 JSON 不报错(rc=0)"     "printf '%s' \"\$out_sl3\" | grep -q 'rc=0'"
+
+echo "== statusline git 分支段 =="
+REPO="$TMP/repo"; mkdir -p "$REPO"
+( cd "$REPO" && git init -q && git config user.email t@t && git config user.name t && git commit -q --allow-empty -m init )
+sl_git="$(printf '%s' "{\"model\":{\"display_name\":\"X\"},\"workspace\":{\"current_dir\":\"$REPO\"}}" | bash "$SL")"
+ok "statusline 出 git 分支"    "printf '%s' \"\$sl_git\" | grep -qE 'main|master'"
+
 echo ""
 printf "结果:${GREEN}%d 通过${NC} / ${RED}%d 失败${NC}\n" "$pass" "$fail"
 [ "$fail" -eq 0 ]

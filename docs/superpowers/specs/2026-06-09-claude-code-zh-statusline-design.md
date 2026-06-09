@@ -33,15 +33,16 @@ Claude Code 通过 `settings.json` 的 `statusLine` 字段支持自定义状态�
 | --- | --- | --- |
 | 模型名 | stdin JSON `model.display_name` | 形如 `🤖 Opus 4.8`;取不到时回退到 `model.id`,再取不到则省略该段 |
 | 当前目录 | stdin JSON `workspace.current_dir`(回退 `cwd`) | 显示 `basename`,形如 `📁 ai-skills` |
-| Git 分支 | 脚本对目录调 `git` | 形如 ` main`,工作区脏则加 `*`;非 git 仓库/无 git 命令时整段省略 |
+| Git 分支 | 脚本对目录调 `git` | 形如 `🌿 main`,工作区脏则加 `*`;非 git 仓库/无 git 命令时整段省略 |
+| 上下文用量 | stdin JSON `context_window.used_percentage` + `context_window_size` | 进度条 `▓/░` + 百分比 + 颜色(<70 绿 / 70-84 黄 / ≥85 红+`⚠ /compact`)+ `/Nk` 分母;无该字段时整段省略 |
 
 示例输出:
 
 ```
-🌸 🤖 Opus 4.8 │ 📁 ai-skills │  main*
+🌸 🤖 Opus 4.8 │ 📁 ai-skills │ 🌿 main* │ ctx ▓▓▓▓▓░░░ 72% /200k
 ```
 
-**不包含** token/上下文用量:该字段在不同 Claude Code 版本里不稳定,为保证跨版本可靠而排除。
+**决策修订(2026-06-10):** 初版 spec 排除 token/上下文用量,理由是"字段跨版本不稳定"。真机验证时发现用户既有的 `~/.claude/statusline.sh` 一直在读 `context_window.used_percentage` / `context_window_size` 且工作正常 —— 排除理由不成立。故新增上下文用量段(进度条样式,沿用用户既有脚本的观感),集"中文标签 + ctx 进度条"两者之长。仍保持 python3 解析、不引入 `jq`。
 
 ## 4. 组件
 

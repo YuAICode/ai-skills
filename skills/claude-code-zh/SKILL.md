@@ -38,7 +38,7 @@ ccstatus status   # 查看当前状态
 ```bash
 bash uninstall.sh
 ```
-干净移除三处改动(CLAUDE.md 区块、settings.json 条目、hook 脚本)。
+干净移除四处改动(CLAUDE.md 区块、settings.json 条目、hook 脚本、statusline/ccstatus 脚本及别名)。statusLine 若被 ccstatus 开过会先还原再删。
 
 ## 工作原理
 

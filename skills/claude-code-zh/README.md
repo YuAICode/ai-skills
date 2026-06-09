@@ -27,7 +27,7 @@
 
 ```bash
 git clone https://github.com/YuAICode/ai-skills.git
-cd ai-skills/claude-code-zh
+cd ai-skills/skills/claude-code-zh
 bash install.sh
 ```
 
@@ -49,7 +49,7 @@ bash install.sh
 bash uninstall.sh
 ```
 
-干净移除三处改动:CLAUDE.md 区块、settings.json 条目、hook 脚本。
+干净移除四处改动:CLAUDE.md 区块、settings.json 条目、hook 脚本、statusline/ccstatus 脚本及别名(statusLine 若开过会先还原再删)。
 
 ## 🔘 一键开关 tooltip
 

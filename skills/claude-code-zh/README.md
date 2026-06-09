@@ -13,7 +13,8 @@
 | --- | --- | --- |
 | ① **AI 全程中文回复** | ✅ | 一段指令写进 `~/.claude/CLAUDE.md`,所有 session 永久生效。代码/commit/专有名词保持英文。 |
 | ② **命令中文 tooltip** | ✅ | PostToolUse hook,跑 `git`/`npm`/`docker` 等命令后弹中文解释。100+ 常用命令。 |
-| ③ ~~界面 chrome 汉化~~ | ❌ | 菜单/状态栏/`/config` 面板。Claude Code v2.1.113+ 已编译成二进制,无 `cli.js`,**技术上不可行**——别改二进制(破坏代码签名 + 升级即丢)。 |
+| ③ **中文状态栏(statusline)** | ✅ | 自前轻量 bash 脚本,经 `settings.json` 的 `statusLine` 输出「模型名 / 目录 / git 分支」。默认不启用,`ccstatus on` 开启。 |
+| ④ ~~界面 chrome 汉化~~ | ❌ | 菜单/`/config` 面板。Claude Code v2.1.113+ 已编译成二进制,无 `cli.js`,**技术上不可行**——别改二进制(破坏代码签名 + 升级即丢)。 |
 
 效果示例(tooltip):
 
@@ -62,6 +63,22 @@ tooltip status     # 查看当前状态
 ```
 
 > 改动 settings.json 后需**重启 Claude Code** 生效。别名在**新开的终端**里可用。
+
+## 🪧 中文状态栏(可选,默认不启用)
+
+底部状态栏显示「模型 / 目录 / git 分支」的中文版,自前轻量 bash,不依赖 npm、不 fork 任何项目:
+
+```
+🌸 🤖 Opus 4.8 │ 📁 ai-skills │ 🌿 main*
+```
+
+```bash
+ccstatus on        # 开启
+ccstatus off       # 关闭(还原原有 statusLine)
+ccstatus status    # 查看状态
+```
+
+> `statusLine` 在 settings.json 里是单一槽位,开启会先**备份**你已有的状态栏配置,关闭时**还原**。改完需**重启 Claude Code** 生效。
 
 ## ⚙️ 自定义
 

@@ -11,7 +11,8 @@ description: 把 Claude Code 汉化 —— 让 Claude 默认用中文回复,并�
 | --- | --- | --- |
 | ① AI 全程中文回复 | ✅ | 写一段指令到 `~/.claude/CLAUDE.md`,所有 session 永久生效 |
 | ② 命令中文 tooltip | ✅ | PostToolUse hook,跑命令后弹中文解释,不碰 Claude 本体 |
-| ③ 界面 chrome(菜单/状态栏/`/config`) | ❌ | Claude Code v2.1.113+ 已是编译二进制,无 `cli.js`,字符串替换汉化方案全部失效。别尝试改二进制(会破坏代码签名 + 升级即失效)。 |
+| ③ 中文状态栏(statusline) | ✅ | 自前轻量 bash 脚本,经 `settings.json` 的 `statusLine` 输出「模型名 / 目录 / git 分支」。默认不启用,`ccstatus on` 开启。 |
+| ④ 界面 chrome(菜单/`/config` 面板) | ❌ | Claude Code v2.1.113+ 已是编译二进制,无 `cli.js`,字符串替换汉化方案全部失效。别尝试改二进制(会破坏代码签名 + 升级即失效)。 |
 
 ## 如何使用
 
@@ -24,6 +25,14 @@ bash install.sh
 - 用 python3 幂等地把 PostToolUse hook 写进 `~/.claude/settings.json`(安装前自动备份为 `settings.json.zh.bak`)
 
 安装后**重启 Claude Code**,tooltip 才会加载;中文回复指令下个 session 全局生效。
+
+### 中文状态栏(可选)
+```bash
+ccstatus on       # 开启:底部显示 🌸 🤖 模型 │ 📁 目录 │ 🌿 分支
+ccstatus off      # 关闭(还原你原来的 statusLine)
+ccstatus status   # 查看当前状态
+```
+默认不启用;开启会备份你已有的 `statusLine`,关闭时还原。改动 settings.json 后需**重启 Claude Code** 生效。
 
 ### 卸载
 ```bash

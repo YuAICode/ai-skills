@@ -45,6 +45,28 @@ fi
 rm -f "$HOOKS_DIR/tool-tips-post.sh" && ok "已删除 hook 脚本"
 rm -f "$CLAUDE_DIR/bin/tooltip" && ok "已删除开关命令"
 
+# ③' 还原/移除中文状态栏(只动我们自己的 statusLine)
+if [ -f "$SETTINGS" ]; then
+  SETTINGS="$SETTINGS" PREV="$CLAUDE_DIR/ccstatus.prev.json" python3 - <<'PY'
+import json, os
+p = os.environ["SETTINGS"]; prev = os.environ["PREV"]
+cmd = "~/.claude/bin/statusline.sh"
+d = json.load(open(p, encoding="utf-8"))
+sl = d.get("statusLine")
+if isinstance(sl, dict) and sl.get("command") == cmd:
+    if os.path.exists(prev):
+        d["statusLine"] = json.load(open(prev, encoding="utf-8")); os.remove(prev)
+    else:
+        del d["statusLine"]
+    json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    open(p, "a", encoding="utf-8").write("\n")
+    print("已还原/移除中文状态栏")
+PY
+fi
+rm -f "$CLAUDE_DIR/bin/statusline.sh" && ok "已删除状态栏脚本"
+rm -f "$CLAUDE_DIR/bin/ccstatus" && ok "已删除 ccstatus 命令"
+rm -f "$CLAUDE_DIR/ccstatus.prev.json" 2>/dev/null || true
+
 # ④ 移除 shell 别名(sentinel 包裹的两行)
 for RC in "$HOME/.zshrc" "$HOME/.bashrc"; do
   [ -e "$RC" ] || continue
@@ -54,6 +76,17 @@ import os, re
 p = os.environ["RC"]
 s = open(p, encoding="utf-8").read()
 new = re.sub(r"\n*# claude-code-zh:tooltip.*\nalias tooltip=.*\n", "\n", s)
+if new != s:
+    open(p, "w", encoding="utf-8").write(new)
+    print("已移除别名:", p)
+PY
+  fi
+  if grep -qF "claude-code-zh:ccstatus" "$RC"; then
+    RC="$RC" python3 - <<'PY'
+import os, re
+p = os.environ["RC"]
+s = open(p, encoding="utf-8").read()
+new = re.sub(r"\n*# claude-code-zh:ccstatus.*\nalias ccstatus=.*\n", "\n", s)
 if new != s:
     open(p, "w", encoding="utf-8").write(new)
     print("已移除别名:", p)

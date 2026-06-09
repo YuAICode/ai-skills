@@ -100,8 +100,30 @@ for RC in "$HOME/.zshrc" "$HOME/.bashrc"; do
   ok "已加别名 tooltip → $RC"
 done
 
+# ---------- ④ 中文状态栏脚本 + ccstatus 开关命令(默认不启用,需 ccstatus on) ----------
+cp "$SCRIPT_DIR/bin/statusline.sh" "$CLAUDE_DIR/bin/statusline.sh"
+chmod 755 "$CLAUDE_DIR/bin/statusline.sh"
+ok "已安装状态栏脚本 → $CLAUDE_DIR/bin/statusline.sh"
+cp "$SCRIPT_DIR/bin/ccstatus.sh" "$CLAUDE_DIR/bin/ccstatus"
+chmod 755 "$CLAUDE_DIR/bin/ccstatus"
+ok "已安装开关命令 → $CLAUDE_DIR/bin/ccstatus"
+
+for RC in "$HOME/.zshrc" "$HOME/.bashrc"; do
+  [ -e "$RC" ] || continue
+  if grep -qF "claude-code-zh:ccstatus" "$RC"; then
+    continue
+  fi
+  {
+    echo ""
+    echo "# claude-code-zh:ccstatus (勿手动编辑此行) — 删除本行及下一行即可移除"
+    echo "alias ccstatus='bash ~/.claude/bin/ccstatus'"
+  } >> "$RC"
+  ok "已加别名 ccstatus → $RC"
+done
+
 echo
 ok "安装完成!"
 warn "重启 Claude Code 后命令 tooltip 才会生效。中文回复指令下个 session 全局生效。"
 echo "开关 tooltip:新开终端后敲  tooltip on | off | status  (不带参数=切换)"
+echo "开启中文状态栏:新开终端后敲  ccstatus on  (默认未启用;off 关闭、status 查状态)"
 echo "卸载:bash $SCRIPT_DIR/uninstall.sh"

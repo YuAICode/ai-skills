@@ -71,6 +71,21 @@ echo '{"statusLine":{"type":"command","command":"/3rd/foo.sh"}}' > "$TMP/setting
 CLAUDE_DIR="$TMP" bash "$CC" on >/dev/null 2>&1
 ok "双重 on 保留最初备份" "python3 -c \"import json;print(json.load(open('$TMP/ccstatus.prev.json'))['command'])\" | grep -q '/orig/sl.sh'"
 
+echo "== install / uninstall 往返(临时 HOME+CLAUDE_DIR)=="
+SKILL_DIR="$(cd "$DIR/.." && pwd)"
+IT="$TMP/inst"; mkdir -p "$IT/.claude"
+echo '{}' > "$IT/.claude/settings.json"
+touch "$IT/.zshrc"
+HOME="$IT" CLAUDE_DIR="$IT/.claude" bash "$SKILL_DIR/install.sh" >/dev/null 2>&1
+ok "install 复制了 statusline.sh" "[ -x '$IT/.claude/bin/statusline.sh' ]"
+ok "install 复制了 ccstatus"      "[ -x '$IT/.claude/bin/ccstatus' ]"
+ok "install 加了 ccstatus 别名"   "grep -q 'claude-code-zh:ccstatus' '$IT/.zshrc'"
+ok "install 默认不写 statusLine"  "python3 -c \"import json,sys;sys.exit(0 if 'statusLine' not in json.load(open('$IT/.claude/settings.json')) else 1)\""
+HOME="$IT" CLAUDE_DIR="$IT/.claude" bash "$SKILL_DIR/uninstall.sh" >/dev/null 2>&1
+ok "uninstall 删了 statusline.sh" "[ ! -e '$IT/.claude/bin/statusline.sh' ]"
+ok "uninstall 删了 ccstatus"      "[ ! -e '$IT/.claude/bin/ccstatus' ]"
+ok "uninstall 移除了 ccstatus 别名" "! grep -q 'claude-code-zh:ccstatus' '$IT/.zshrc'"
+
 echo ""
 printf "结果:${GREEN}%d 通过${NC} / ${RED}%d 失败${NC}\n" "$pass" "$fail"
 [ "$fail" -eq 0 ]

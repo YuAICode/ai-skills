@@ -35,18 +35,21 @@ segs=()
 if [ -n "$cwd" ] && command -v git >/dev/null 2>&1; then
   branch="$(git -C "$cwd" rev-parse --abbrev-ref HEAD 2>/dev/null)"
   if [ -n "$branch" ]; then
+    # --porcelain 会把 untracked 文件也算作脏(* 标记),语义更准;
+    # 超大 monorepo 上可能略慢,但本 skill 面向的仓库规模可忽略。
     dirty=""
     [ -n "$(git -C "$cwd" status --porcelain 2>/dev/null)" ] && dirty="*"
     segs+=("🌿 ${branch}${dirty}")
   fi
 fi
 
-# 用 │ 拼接
+# 用 │ 拼接(数组长度 guard,bash 3.2 下空数组也安全)
 line=""
-for s in "${segs[@]:-}"; do
-  [ -z "$s" ] && continue
-  if [ -z "$line" ]; then line="$s"; else line="$line │ $s"; fi
-done
+if [ "${#segs[@]}" -gt 0 ]; then
+  for s in "${segs[@]}"; do
+    if [ -z "$line" ]; then line="$s"; else line="$line │ $s"; fi
+  done
+fi
 
 [ -n "$line" ] && printf '🌸 %s\n' "$line"
 exit 0

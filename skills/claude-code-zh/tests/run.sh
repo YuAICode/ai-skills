@@ -45,6 +45,25 @@ REPO="$TMP/repo"; mkdir -p "$REPO"
 sl_git="$(printf '%s' "{\"model\":{\"display_name\":\"X\"},\"workspace\":{\"current_dir\":\"$REPO\"}}" | bash "$SL")"
 ok "statusline 出 git 分支"    "printf '%s' \"\$sl_git\" | grep -qE 'main|master'"
 
+echo "== ccstatus 开关(临时 CLAUDE_DIR)=="
+CC="$DIR/../bin/ccstatus.sh"
+mkdir -p "$TMP/bin"
+cp "$DIR/../bin/statusline.sh" "$TMP/bin/statusline.sh"
+# 预置「别人的」statusLine
+echo '{"statusLine":{"type":"command","command":"/other/sl.sh","padding":1}}' > "$TMP/settings.json"
+CLAUDE_DIR="$TMP" bash "$CC" on >/dev/null 2>&1
+ok "on 后指向我们的脚本"   "python3 -c \"import json;print(json.load(open('$TMP/settings.json'))['statusLine']['command'])\" | grep -q 'statusline.sh'"
+ok "on 退避了原 statusLine" "[ -f '$TMP/ccstatus.prev.json' ]"
+ok "on 后 settings 合法 JSON" "python3 -c \"import json;json.load(open('$TMP/settings.json'))\""
+CLAUDE_DIR="$TMP" bash "$CC" off >/dev/null 2>&1
+ok "off 还原原 statusLine"  "python3 -c \"import json;print(json.load(open('$TMP/settings.json'))['statusLine']['command'])\" | grep -q '/other/sl.sh'"
+ok "off 后 prev 文件已删"   "[ ! -f '$TMP/ccstatus.prev.json' ]"
+# 无原 statusLine:on→off 应干净删键
+echo '{}' > "$TMP/settings.json"
+CLAUDE_DIR="$TMP" bash "$CC" on  >/dev/null 2>&1
+CLAUDE_DIR="$TMP" bash "$CC" off >/dev/null 2>&1
+ok "无原值时 off 干净删 statusLine 键" "python3 -c \"import json,sys;sys.exit(0 if 'statusLine' not in json.load(open('$TMP/settings.json')) else 1)\""
+
 echo ""
 printf "结果:${GREEN}%d 通过${NC} / ${RED}%d 失败${NC}\n" "$pass" "$fail"
 [ "$fail" -eq 0 ]

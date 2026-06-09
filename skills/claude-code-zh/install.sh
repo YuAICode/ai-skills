@@ -101,6 +101,7 @@ for RC in "$HOME/.zshrc" "$HOME/.bashrc"; do
 done
 
 # ---------- ④ 中文状态栏脚本 + ccstatus 开关命令(默认不启用,需 ccstatus on) ----------
+mkdir -p "$CLAUDE_DIR/bin"   # 兜底:不依赖 ③ 块的建目录,块顺序调整也安全
 cp "$SCRIPT_DIR/bin/statusline.sh" "$CLAUDE_DIR/bin/statusline.sh"
 chmod 755 "$CLAUDE_DIR/bin/statusline.sh"
 ok "已安装状态栏脚本 → $CLAUDE_DIR/bin/statusline.sh"

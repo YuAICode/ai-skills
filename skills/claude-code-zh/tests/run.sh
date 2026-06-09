@@ -86,6 +86,16 @@ ok "uninstall 删了 statusline.sh" "[ ! -e '$IT/.claude/bin/statusline.sh' ]"
 ok "uninstall 删了 ccstatus"      "[ ! -e '$IT/.claude/bin/ccstatus' ]"
 ok "uninstall 移除了 ccstatus 别名" "! grep -q 'claude-code-zh:ccstatus' '$IT/.zshrc'"
 
+echo "== install → ccstatus on → uninstall 还原外来 statusLine(端到端)=="
+IT2="$TMP/inst2"; mkdir -p "$IT2/.claude"; touch "$IT2/.zshrc"
+echo '{"statusLine":{"type":"command","command":"/foreign/bar.sh","padding":2}}' > "$IT2/.claude/settings.json"
+HOME="$IT2" CLAUDE_DIR="$IT2/.claude" bash "$SKILL_DIR/install.sh" >/dev/null 2>&1
+CLAUDE_DIR="$IT2/.claude" bash "$IT2/.claude/bin/ccstatus" on >/dev/null 2>&1
+ok "on 后退避了外来 statusLine" "[ -f '$IT2/.claude/ccstatus.prev.json' ]"
+HOME="$IT2" CLAUDE_DIR="$IT2/.claude" bash "$SKILL_DIR/uninstall.sh" >/dev/null 2>&1
+ok "uninstall 还原了外来 statusLine" "python3 -c \"import json;print(json.load(open('$IT2/.claude/settings.json'))['statusLine']['command'])\" | grep -q '/foreign/bar.sh'"
+ok "uninstall 后 prev.json 已删"     "[ ! -f '$IT2/.claude/ccstatus.prev.json' ]"
+
 echo ""
 printf "结果:${GREEN}%d 通过${NC} / ${RED}%d 失败${NC}\n" "$pass" "$fail"
 [ "$fail" -eq 0 ]

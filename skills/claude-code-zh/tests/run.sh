@@ -63,6 +63,13 @@ echo '{}' > "$TMP/settings.json"
 CLAUDE_DIR="$TMP" bash "$CC" on  >/dev/null 2>&1
 CLAUDE_DIR="$TMP" bash "$CC" off >/dev/null 2>&1
 ok "无原值时 off 干净删 statusLine 键" "python3 -c \"import json,sys;sys.exit(0 if 'statusLine' not in json.load(open('$TMP/settings.json')) else 1)\""
+# 双重 on:第三方又改了 statusLine 后再 on,不应冲掉最初的原始备份
+echo '{"statusLine":{"type":"command","command":"/orig/sl.sh","padding":3}}' > "$TMP/settings.json"
+rm -f "$TMP/ccstatus.prev.json"
+CLAUDE_DIR="$TMP" bash "$CC" on >/dev/null 2>&1
+echo '{"statusLine":{"type":"command","command":"/3rd/foo.sh"}}' > "$TMP/settings.json"
+CLAUDE_DIR="$TMP" bash "$CC" on >/dev/null 2>&1
+ok "双重 on 保留最初备份" "python3 -c \"import json;print(json.load(open('$TMP/ccstatus.prev.json'))['command'])\" | grep -q '/orig/sl.sh'"
 
 echo ""
 printf "结果:${GREEN}%d 通过${NC} / ${RED}%d 失败${NC}\n" "$pass" "$fail"

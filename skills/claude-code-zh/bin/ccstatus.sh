@@ -33,8 +33,8 @@ import json, os
 p = os.environ["SETTINGS"]; cmd = os.environ["OUR_CMD"]; prev = os.environ["PREV"]
 d = json.load(open(p, encoding="utf-8"))
 sl = d.get("statusLine")
-# 已有别人的 statusLine → 先退避
-if isinstance(sl, dict) and sl.get("command") != cmd:
+# 已有别人的 statusLine → 先退避(仅当还没有备份时才写,避免二次 on 冲掉最初的原始备份)
+if isinstance(sl, dict) and sl.get("command") != cmd and not os.path.exists(prev):
     json.dump(sl, open(prev, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 d["statusLine"] = {"type": "command", "command": cmd, "padding": 0}
 json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2); open(p, "a").write("\n")

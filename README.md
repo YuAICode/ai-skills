@@ -12,7 +12,7 @@
 [![Stars](https://img.shields.io/github/stars/YuAICode/ai-skills?style=social)](https://github.com/YuAICode/ai-skills/stargazers)
 [![markdownlint](https://img.shields.io/badge/lint-markdownlint-brightgreen?logo=markdown)](./skills/commit-guard-zh)
 
-**35 practical, battle-tested skills for [Claude Code](https://www.claude.com/product/claude-code).** Every skill ships with its own offline tests, and the whole collection is self-linted by [`skill-doctor`](./skills/skill-doctor) — not an untested AI-generated dump. Chinese-first, but most skills are language- and stack-agnostic.
+**36 practical, battle-tested skills for [Claude Code](https://www.claude.com/product/claude-code).** Every skill ships with its own offline tests, and the whole collection is self-linted by [`skill-doctor`](./skills/skill-doctor) — not an untested AI-generated dump. Chinese-first, but most skills are language- and stack-agnostic.
 
 Each skill is a self-contained folder with a `SKILL.md` — drop it into `~/.claude/skills/` and Claude picks it up.
 
@@ -48,6 +48,7 @@ Each skill is a self-contained folder with a `SKILL.md` — drop it into `~/.cla
 | [doc-sync](./skills/doc-sync) | After code changes, surface docs that may be stale and need updating | "check doc sync" |
 | [slack-to-spec](./skills/slack-to-spec) | Distill a Slack channel discussion into a landable requirement spec | `/slack-to-spec <channel>` |
 | [source-to-spec](./skills/source-to-spec) | PDF / docs / meeting notes → landable requirement spec | "turn this doc into a spec" |
+| [figma-to-page](./skills/figma-to-page) | Implement a Figma frame as code, then self-verify with pixel diff until it matches | a figma.com link / "build this design" |
 
 ### Meta-tooling (for building the collection)
 

@@ -12,7 +12,7 @@
 [![Stars](https://img.shields.io/github/stars/YuAICode/ai-skills?style=social)](https://github.com/YuAICode/ai-skills/stargazers)
 [![markdownlint](https://img.shields.io/badge/lint-markdownlint-brightgreen?logo=markdown)](./skills/commit-guard-zh)
 
-**35 个即用、且每个都带测试的 [Claude Code](https://www.claude.com/product/claude-code) skill。** 有逻辑的 skill 都配离线测试,整个仓库由内置的 [`skill-doctor`](./skills/skill-doctor) 自校验——不是没测试的 AI 批量堆砌。中文优先,大部分跨语言跨栈通用。
+**36 个即用、且每个都带测试的 [Claude Code](https://www.claude.com/product/claude-code) skill。** 有逻辑的 skill 都配离线测试,整个仓库由内置的 [`skill-doctor`](./skills/skill-doctor) 自校验——不是没测试的 AI 批量堆砌。中文优先,大部分跨语言跨栈通用。
 
 每个 skill 是一个含 `SKILL.md` 的独立文件夹,丢进 `~/.claude/skills/` 即可被 Claude 识别。
 
@@ -48,6 +48,7 @@
 | [doc-sync](./skills/doc-sync) | 找出代码改动后可能过期的文档候选,由 Claude 判断是否需同步 | `检查文档同步` / `代码改了文档要更新吗` |
 | [slack-to-spec](./skills/slack-to-spec) | 把 Slack 频道讨论收敛成「可落地需求」spec 文档(抓决策轨迹 + 隐藏需求) | `/slack-to-spec <频道> [时间范围]` |
 | [source-to-spec](./skills/source-to-spec) | PDF/飞书/会议纪要 → 可落地需求 spec(slack-to-spec 姊妹篇) | `把这份文档整理成需求` |
+| [figma-to-page](./skills/figma-to-page) | 按 Figma 设计稿写页面,再用像素 diff 自校验迭代到还原(跨技术栈) | figma.com 链接 / `照设计稿写这个页面` |
 
 ### 元工具(用来造这个合集本身)
 

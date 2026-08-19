@@ -8,6 +8,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PIXDIFF="$DIR/../bin/pixdiff.py"
 DETECT="$DIR/../bin/detect-stack.sh"
 FCACHE="$DIR/../bin/figma-cache.sh"
+QMODE="$DIR/../bin/quota-mode.sh"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -410,6 +411,71 @@ assert_exit 0 "空 XDG_CACHE_HOME 下 list 正常退出" -- \
   env XDG_CACHE_HOME="$TMP/nonexistent-cache" bash "$FCACHE" list
 assert_exit 0 "缓存目录不存在时 clear 正常退出" -- \
   env XDG_CACHE_HOME="$TMP/nonexistent-cache" bash "$FCACHE" clear
+
+# ============================================================
+# quota-mode:取数模式解析
+# ============================================================
+CONF_HOME="$TMP/config"
+# 每次都要隔离 XDG_CONFIG_HOME 并清掉 FIGMA_QUOTA_MODE,否则跑测试的人自己的配置会污染结果
+qm() { env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE" "$@"; }
+
+echo "== quota-mode:默认与配置读取 =="
+assert_contains "MODE=auto" "无配置时默认 auto" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+assert_contains "$CONF_HOME/figma-to-page/quota.conf" "where 打印配置路径" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE" where
+qm set unlimited >/dev/null 2>&1
+assert_contains "MODE=full" "配置 unlimited → full" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+assert_contains "REPORT_QUOTA=no" "unlimited 不汇报配额" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+qm set thrifty >/dev/null 2>&1
+assert_contains "MODE=thrifty" "配置 thrifty → thrifty" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+assert_contains "REPORT_QUOTA=yes" "thrifty 要汇报配额" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+
+echo "== quota-mode:环境变量优先于配置文件 =="
+assert_contains "MODE=full" "env 覆盖配置文件" -- \
+  env FIGMA_QUOTA_MODE=unlimited XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+assert_contains "环境变量" "来源标注为环境变量" -- \
+  env FIGMA_QUOTA_MODE=unlimited XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+
+echo "== quota-mode:配置文件解析健壮性 =="
+printf '# 只有注释\n\n  thrifty  # 带尾注释和空格\n' > "$CONF_HOME/figma-to-page/quota.conf"
+assert_contains "MODE=thrifty" "跳过注释/空行,去掉尾注释与空格" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+printf 'unlimited\necho PWNED\n' > "$CONF_HOME/figma-to-page/quota.conf"
+assert_not_contains "PWNED" "配置文件不被 source(不执行其中内容)" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+
+echo "== quota-mode:非法值与用法错误 =="
+assert_exit 2 "配置非法值 → exit 2" -- \
+  env FIGMA_QUOTA_MODE=bogus XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE"
+assert_exit 2 "set 非法值 → exit 2" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE" set bogus
+assert_exit 2 "resolve 缺参数 → exit 2" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE" resolve Dev
+assert_exit 2 "未知命令 → exit 2" -- \
+  env -u FIGMA_QUOTA_MODE XDG_CONFIG_HOME="$CONF_HOME" bash "$QMODE" nope
+
+echo "== quota-mode:auto 按 seat/tier 判定 =="
+assert_contains "MODE=thrifty" "View + starter → thrifty(20/月)" -- \
+  bash "$QMODE" resolve View starter
+assert_contains "MODE=thrifty" "View + enterprise → thrifty(6/月,比 starter 还紧)" -- \
+  bash "$QMODE" resolve View enterprise
+assert_contains "MODE=thrifty" "Collab seat → thrifty" -- \
+  bash "$QMODE" resolve Collab organization
+assert_contains "MODE=thrifty" "Dev + starter → thrifty(starter 的 Dev 仍是 20/月)" -- \
+  bash "$QMODE" resolve Dev starter
+assert_contains "MODE=full" "Dev + professional → full(200/天)" -- \
+  bash "$QMODE" resolve Dev professional
+assert_contains "MODE=full" "Full + enterprise → full(600/天)" -- \
+  bash "$QMODE" resolve Full enterprise
+assert_contains "MODE=full" "seat/tier 大小写不敏感" -- \
+  bash "$QMODE" resolve DEV Enterprise
+assert_contains "MODE=thrifty" "未知 seat → 保守走 thrifty" -- \
+  bash "$QMODE" resolve Mystery enterprise
 
 # ============================================================
 echo ""

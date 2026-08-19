@@ -34,9 +34,9 @@ python3 -m pip install Pillow
 
 > **务必选中目标 frame 再复制链接。** 不带 `node-id` 的链接指向整个文件,skill 无法定位要还原哪个页面。
 
-## ⚠️ 先看 MCP 配额
+## 先设一次取数模式
 
-Figma MCP 的**读取类工具有硬配额**,按 plan + seat 计:
+Figma MCP 读取类工具的配额按 plan + seat 计,**上下限差 100 倍**:
 
 | Seat | Starter | Professional | Organization | Enterprise |
 |---|---|---|---|---|
@@ -45,18 +45,31 @@ Figma MCP 的**读取类工具有硬配额**,按 plan + seat 计:
 
 豁免(不计配额):`whoami`、`generate_figma_design`、`add_code_connect_map`。
 
-**View seat 一个月只有 20 次**,因此 skill 默认走**省调用模式**:每帧 2–3 次调用,文件级数据(design variables、Code Connect 映射)用 `bin/figma-cache.sh` 落盘缓存跨帧复用。首帧 4–5 次、后续帧 2–3 次,约合**每月 6–8 个页面**。
+所以没有一个「对所有人都对」的默认值,skill 用 `bin/quota-mode.sh` 决定走哪套:
 
-配额充裕时(Dev/Full seat)可切**完整模式**:先 `get_metadata` 拿结构再分区块拉 `get_design_context`,更精确、更省上下文,但更费配额 —— 两者此消彼长,按实际瓶颈选。
+| 模式 | 行为 | 适合 |
+|---|---|---|
+| **完整** | 先 `get_metadata` 拿结构,再**分区块**拉 `get_design_context` | 配额充裕。更准(大 frame 整拉会丢深层真值)、更省上下文,但更费配额 |
+| **省调用** | 每帧 2–3 次,直接整拉 frame | 配额紧张。约 6–8 个页面/月 |
 
-用 `whoami`(不计配额)确认自己的 seat。
+**默认 `auto`** —— 开工时调 `whoami`(免费)看 seat/tier 自动判定,Dev/Full seat 且付费 plan 走完整,其余走省调用。
+
+实测不受配额约束(比如跑过远超 20 次没被拦)就写死一次,以后所有会话生效:
+
+```bash
+bash bin/quota-mode.sh set unlimited   # unlimited | thrifty | auto
+```
+
+配置存在 `~/.config/figma-to-page/quota.conf`;临时覆盖用环境变量 `FIGMA_QUOTA_MODE=thrifty`。撞到 rate limit 报错时 skill 会自动降级跑完当前帧,并提示你改配置。
+
+> **注意配额是按人不是按文件的** —— 换个设计文件不会重置。文件级数据(design variables、Code Connect 映射)由 `bin/figma-cache.sh` 落盘缓存跨帧复用,同一文件只付一次,两种模式都生效。
 
 ## 六阶段流程
 
 | 阶段 | 做什么 | 产出 |
 |---|---|---|
-| 0 预检 | 探测技术栈、token 层位置、可用截图手段 | 能力报告(含需降级项) |
-| 1 抽取 | `get_metadata` → `get_variable_defs` → `get_code_connect_map` → `get_design_context` → `download_assets` → `get_screenshot` | 设计真值集 + 基准图 |
+| 0 预检 | 探测技术栈、token 层位置、可用截图手段;定取数模式 | 能力报告(含需降级项) |
+| 1 抽取 | 完整模式:`get_metadata` → 分区块 `get_design_context`;省调用模式:直接整拉 frame。两者都接 `get_variable_defs` / `get_code_connect_map`(走缓存) / `download_assets` / `get_screenshot` | 设计真值集 + 基准图 |
 | 2 token 对账 | Figma 变量 ↔ 项目 theme 映射,缺的补进去;没有 token 层就建 | `token-map.md` |
 | 3 生成 | 按映射表写代码,布局用语义而非绝对定位 | 页面代码 |
 | 4 校验闭环 | 截图 → `pixdiff.py` → 按缺陷簇修 → 重跑 | 每轮一个偏差数字 |
@@ -71,6 +84,19 @@ bash bin/detect-stack.sh [项目根目录]
 ```
 
 启发式探测技术栈、design token 层候选位置、可用截图手段、Pillow 可用性。退出码 `0`=完成探测(信息性),`1`=目录无效。
+
+### `bin/quota-mode.sh`
+
+决定这台机器走完整模式还是省调用模式。优先级:环境变量 `FIGMA_QUOTA_MODE` > `~/.config/figma-to-page/quota.conf` > `auto`。
+
+```bash
+bash bin/quota-mode.sh                        # 打印 MODE / REPORT_QUOTA / SOURCE
+bash bin/quota-mode.sh set unlimited          # 写入用户配置(unlimited | thrifty | auto)
+bash bin/quota-mode.sh resolve Dev enterprise # auto 时按 whoami 的 seat/tier 判定
+bash bin/quota-mode.sh where                  # 打印配置文件路径
+```
+
+`MODE` 终态只有 `full` / `thrifty` 两种(`show` 在未配置时输出 `auto`,等 `resolve` 定夺)。`REPORT_QUOTA=no` 时 skill 不再播报「本次预计 N 次调用」。配置文件按行读取,不 source,不会执行其中内容。
 
 ### `bin/figma-cache.sh`
 
@@ -171,7 +197,7 @@ python3 bin/pixdiff.py --design <设计稿.png> --actual <实现截图.png> \
 bash tests/run.sh
 ```
 
-69 项断言,全离线、零网络,兼容 macOS 自带 bash 3.2。含 Pillow 缺失时的降级路径验证。
+91 项断言,全离线、零网络,兼容 macOS 自带 bash 3.2。含 Pillow 缺失时的降级路径验证。
 
 ## License
 

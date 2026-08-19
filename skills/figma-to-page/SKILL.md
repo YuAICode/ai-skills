@@ -21,11 +21,11 @@ description: 按 Figma 设计稿还原页面代码,拉结构化设计数据 + de
 1. **不看截图猜数值。** 间距、字号、行高、色值一律从 `get_design_context` / `get_variable_defs` 取真值。截图只用于最后对答案。
 2. **不硬编码样式值。** 所有色值 / 字号 / 间距必须走项目的 token / theme 层;项目没有就先建一个(阶段 2)。
 3. **不靠肉眼说「差不多」收工。** 必须跑 `bin/pixdiff.py` 拿到量化偏差,收敛到阈值或如实报告残留。
-4. **不浪费 MCP 配额。** Figma 读取类工具有**月/日配额**,见下。每一次调用都要有明确理由。
+4. **取数策略要匹配实际配额,不要凭空节省。** 配额充裕就走完整模式(更准),配额紧张才省调用 —— 由 `bin/quota-mode.sh` 决定,见下。
 
-## ⚠️ MCP 配额纪律
+## MCP 取数策略
 
-Figma MCP 的**读取类工具有硬配额**,按 plan + seat 计:
+Figma 读取类工具的配额按 plan + seat 计,**上下限差 100 倍**:
 
 | Seat | Starter | Professional | Organization | Enterprise |
 |---|---|---|---|---|
@@ -34,23 +34,39 @@ Figma MCP 的**读取类工具有硬配额**,按 plan + seat 计:
 
 豁免(不计配额):`whoami`、`generate_figma_design`、`add_code_connect_map`。
 
-**View seat 用户一个月只有 20 次。** 因此:
+**所以不存在一个「对所有人都对」的默认值。** 省调用模式牺牲还原精度换配额(跳过 `get_metadata`、不分区块拉 context,大 frame 会糊);配额够的人走它纯属白亏。用脚本决定:
 
-- **阶段 0 先用 `whoami`(免费)确认 seat**,再按配额决定走「省调用模式」还是「完整模式」。
-- **文件级数据必须缓存复用** —— `get_variable_defs`、`get_code_connect_map` 是整个设计文件的属性,不随页面变化,用 `bin/figma-cache.sh` 存盘,同一文件只付一次。
-- **每次调用前先想:这次调用换来的信息,是不是已经在手上了。**
-- 开工前**把预计消耗告诉用户**(例:「本次预计 3 次调用,其中 token 定义走缓存」)。
+```bash
+bash <skill>/bin/quota-mode.sh          # 输出 MODE / REPORT_QUOTA / SOURCE
+```
+
+| 配置值 | 行为 |
+|---|---|
+| `unlimited` | 走**完整模式**,且**不必**向用户播报预计调用次数 |
+| `thrifty` | 走**省调用模式** |
+| `auto`(默认) | 输出 `MODE=auto` → 调 `whoami`(免费)拿 seat/tier,再跑 `quota-mode.sh resolve <seat> <tier>` 得到终态 |
+
+优先级:环境变量 `FIGMA_QUOTA_MODE` > `~/.config/figma-to-page/quota.conf` > `auto`。
+用户说自己不受配额约束时,给他:`bash <skill>/bin/quota-mode.sh set unlimited`(写一次,以后所有会话生效)。
+
+无论哪种模式都成立的两条:
+
+- **文件级数据必须缓存复用** —— `get_variable_defs`、`get_code_connect_map` 是整个设计文件的属性,不随页面变化,用 `bin/figma-cache.sh` 存盘,同一文件只付一次。这不只省配额,也省上下文和往返时间。
+- **撞到 rate limit 报错就立刻降级**:切省调用模式跑完当前帧,并告诉用户「实测已触限,建议 `quota-mode.sh set thrifty`」。不要在同一个模式下反复重试。
+
+`REPORT_QUOTA=yes` 时,开工前把预计消耗告诉用户(例:「本次预计 3 次调用,其中 token 定义走缓存」);`no` 时跳过这句,别制造噪音。
 
 ## 阶段 0 · 预检
 
 ```bash
 bash <skill>/bin/detect-stack.sh <项目根目录>
 bash <skill>/bin/figma-cache.sh list          # 看哪些文件级数据已有缓存
+bash <skill>/bin/quota-mode.sh                # 定取数模式
 ```
 
-再调 `whoami`(**不计配额**)确认 seat 与 plan。
+`quota-mode.sh` 输出 `MODE=auto` 时(默认),再调 `whoami`(**不计配额**)拿 seat 与 tier,喂给 `quota-mode.sh resolve <seat> <tier>` 得到终态。输出 `full` / `thrifty` 时说明用户已显式配置,**不用再调 `whoami`**。
 
-输出技术栈、token 层候选位置、可用截图手段、Pillow 是否可用。**把这份能力报告告诉用户**,特别是需要降级的部分(没有 token 层 / 没有自动截图手段 / 缺 Pillow),以及**本次预计的 MCP 调用次数**。不要静默跳过任何一项。
+输出技术栈、token 层候选位置、可用截图手段、Pillow 是否可用。**把这份能力报告告诉用户**,特别是需要降级的部分(没有 token 层 / 没有自动截图手段 / 缺 Pillow)。`REPORT_QUOTA=yes` 时一并给出**本次预计的 MCP 调用次数**。不要静默跳过任何一项。
 
 同时确认链接是否带 `node-id`。**没有 node-id 就是整个文件而非具体 frame** —— 要求用户在 Figma 里选中目标 frame 再复制链接。链接里 `figma.com/design/<fileKey>/<名字>?node-id=1-2` → `fileKey` 与 `nodeId=1:2`。
 
@@ -60,7 +76,22 @@ bash <skill>/bin/figma-cache.sh list          # 看哪些文件级数据已有�
 
 Figma MCP 工具名的前缀随客户端而变(如 `mcp__claude_ai_Figma__get_design_context`),按实际可用的工具名调用。
 
-### 省调用模式(默认,配额 ≤ 50 次/月时必用)
+按阶段 0 定下的 `MODE` 选一套。
+
+### 完整模式(`MODE=full`)
+
+| 步骤 | 工具 | 说明 |
+|---|---|---|
+| 1.1 | `get_metadata` | 先拿**轻量节点索引**,看清 frame 的结构分区 |
+| 1.2 | `get_design_context` | 按 1.1 的结构**分区块多次调用**,而不是整个 frame 一把梭 |
+| 1.3 | `get_screenshot` | 基准图,详见下方「截图落盘」 |
+| 1.4 | `download_assets` | 仅当 frame 里确有图标/图片时调用 |
+| 1.5 | `get_variable_defs` | **先查缓存**,未命中才调,调完立刻写缓存 |
+| 1.6 | `get_code_connect_map` | 同上。项目没配 Code Connect 就永久跳过 |
+
+分区块比整拉更准 —— 大 frame 整拉会因为响应被截断而丢深层节点的真值,而且**更省上下文**(只带回你要写的那块)。代价是更多次调用,配额够的时候这笔买卖划算。
+
+### 省调用模式(`MODE=thrifty`)
 
 **每帧 2–3 次调用。** 首次接触某个设计文件时额外 +2(之后走缓存)。
 
@@ -72,7 +103,9 @@ Figma MCP 工具名的前缀随客户端而变(如 `mcp__claude_ai_Figma__get_de
 | 1.4 | `get_variable_defs` | 0–1 | **先查缓存**,未命中才调,调完立刻写缓存 |
 | 1.5 | `get_code_connect_map` | 0–1 | 同上。项目没配 Code Connect 就永久跳过 |
 
-缓存用法:
+约 6–8 个页面/月(20 次配额)。整拉大 frame 有丢真值的风险,阶段 4 的像素 diff 会把它暴露出来 —— 到时按缺陷簇针对性补一次分区 `get_design_context`,不要盲目重拉。
+
+### 缓存用法(两种模式都要做)
 
 ```bash
 # 先查(命中则省一次调用)
@@ -80,10 +113,6 @@ bash <skill>/bin/figma-cache.sh get <fileKey> variables && echo 命中
 # 未命中 → 调 get_variable_defs → 把结果写盘
 bash <skill>/bin/figma-cache.sh put <fileKey> variables <结果文件>
 ```
-
-### 完整模式(配额充裕时,如 Dev seat 200 次/天)
-
-在省调用模式前面加一步 `get_metadata` 拿轻量节点索引,再按结构**分区块**多次 `get_design_context`。大 frame 这样更精确、也更省**上下文**,但更费**配额** —— 两者是此消彼长的,按实际瓶颈选。
 
 ### 截图落盘(阶段 4 的闭环依赖这步)
 
